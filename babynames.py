@@ -9,11 +9,11 @@
 
 # Google's Python Class
 # http://code.google.com/edu/languages/google-python-class/
-
+import os
 import sys
 import re
 import argparse
-
+__author__ = "wharris64/ with help"
 """
 Define the extract_names() function below and change main()
 to call it.
@@ -45,8 +45,28 @@ def extract_names(filename):
     followed by the name-rank strings in alphabetical order.
     ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
     """
-    # +++your code here+++
-    return
+    names = []
+    with open(filename) as f:
+        text = f.read()
+    year_check = re.search(r'Popularity\sin\s(\d\d\d\d)()', text)
+    if not year_check:
+        # We didn't find a year, so we'll exit with an error message.
+        raise RuntimeError("Couldn\'t find the year!\n")
+    year = year_check.group(1)
+    names.append(year)
+    tups = re.findall(r'<td>(\d+)</td><td>(\w+)</td>\<td>(\w+)</td>', text)
+    names_to_rank = {}
+    for rank, boyname, girlname in tups:
+        # unpack the tuple into 3 vars
+        if boyname not in names_to_rank:
+            names_to_rank[boyname] = rank
+        if girlname not in names_to_rank:
+            names_to_rank[girlname] = rank
+    sorted_names = sorted(names_to_rank.keys())
+    for name in sorted_names:
+        names.append(name + " " + names_to_rank[name])
+
+    return names
 
 
 def create_parser():
@@ -60,23 +80,35 @@ def create_parser():
     return parser
 
 
-def main():
+def main(args):
+    # This command-line parsing code is provided.
+    # Make a list of command line arguments, omitting the [0] element
+    # which is the script itself.
+    # args = sys.argv[1:]
     parser = create_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     if not args:
-        parser.print_usage()
+        print('usage: [--summaryfile] file [file ...]')
         sys.exit(1)
 
-    file_list = args.files
+    # Notice the summary flag and remove it from args if it is present.
+    summary = args.summaryfile
 
-    # option flag
-    create_summary = args.summaryfile
+    for filename in args.files:
+        names = extract_names(filename)
 
-    # +++your code here+++
-    # For each filename, get the names, then either print the text output
-    # or write it to a summary file
+        # Make text out of the whole list
+        text = '\n'.join(names)
+
+        if summary:
+            with open(filename + '.summary', 'w') as outf:
+                outf.write(text + '\n')
+
+        else:
+            print(text)
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
+
