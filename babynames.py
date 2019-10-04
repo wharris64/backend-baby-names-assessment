@@ -38,7 +38,7 @@ Suggested milestones for incremental development:
  -Fix main() to use the extract_names list
 """
 
-
+#testing ssh config
 def extract_names(filename):
     """
     Given a file name for baby.html, returns a list starting with the year string
@@ -67,20 +67,6 @@ def extract_names(filename):
     for hat in new_world_order:
         ordered_names.append("{} {}".format(hat, names_dict[hat]))
     text = '\n'.join(ordered_names) + '\n'
-        
-        
-    #ordered_dict = sorted(names_dict)
-    #new_world_order.insert(0, year)
-    
-    #for alpha_names in ordered_dict:
-     #   if alpha_names == names_dict.key:
-      #      temp_val=concat j and names_dict.value
-       #     orderednames.append(temp_val)
-    #cat = new_world_order[1]
- #return new_world_order
-    #return names_dict
-    #return ordered_dict
-    #return year
     return text
 
 
